@@ -1,0 +1,52 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Jul  3 18:16:54 2019
+
+@author: fernandr
+"""
+
+void TestSimpleTexturing(){
+std::string iname = « Bugs_Bunny.obj »;
+std::string imagename = « Bugs_Bunny_0.jpg »;
+
+// Read the image which will be the texture
+bmpReader = vtk.vtkBMPReader()
+bmpReader.SetFileName("/home/fernandr/Bureau/masonry.BMP")
+bmpReader.Update()
+
+// Creating the texture
+atexture = vtk.vtkTexture()
+atexture.SetInputConnection(bmpReader.GetOutputPort())
+atexture.InterpolateOn()
+
+// Import geometry from a VRML file
+vtkVRMLImporter *importer=vtkVRMLImporter::New();
+importer->SetFileName(iname.c_str());
+importer->Read();
+importer->Update();
+vtkDataSet *pDataset;
+
+vtkActorCollection *actors = importer->GetRenderer()->GetActors();
+actors->InitTraversal();
+pDataset = actors->GetNextActor()->GetMapper()->GetInput();
+vtkPolyData *polyData = vtkPolyData::SafeDownCast(pDataset);
+polyData->Update();
+
+// Import geometry from an OBJ file
+std::cout << « Obj reader =  » << polyData2->GetNumberOfPoints() << std::endl;
+std::cout << « Obj point data =  » << polyData2->GetPointData()->GetNumberOfArrays() << std::endl;
+std::cout << « Obj point data tuples =  » << polyData2->GetPointData()->GetArray(0)->GetNumberOfTuples() << std::endl;
+std::cout << « Obj point data compon =  » << polyData2->GetPointData()->GetArray(0)->GetNumberOfComponents() << std::endl;
+
+// Renderer
+mapper = PolyDataMapper
+mapper->SetInput(polyData2);
+texturedQuad = vtkActor
+texturedQuad->SetMapper(mapper);
+texturedQuad->SetTexture(atexture);
+
+// Visualize the textured plane
+renderer->AddActor(texturedQuad);
+
+}
